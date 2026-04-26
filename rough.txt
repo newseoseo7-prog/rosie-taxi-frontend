@@ -1,0 +1,86 @@
+import { NextRequest, NextResponse } from "next/server";
+
+const VERTEX_AI_KEY =  "AIzaSyDmSIzRiQhPWizDGriJeFTNb7lmJEUOpx4";
+const PROJECT_ID = process.env.GOOGLE_PROJECT_ID || "our-compound-461022-a2";
+const LOCATION = process.env.GOOGLE_LOCATION || 'us-central1';
+
+async function analyzeCardImage(imageBuffer: Buffer, mimeType: string) {
+    const base64Image = imageBuffer.toString('base64');
+    const url = `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/publishers/google/models/gemini-pro-vision:generateContent`;
+
+    const prompt = `Extract: {"name":"","date":"","number":""} from image. Return ONLY JSON.`;
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${VERTEX_AI_KEY}`
+        },
+        body: JSON.stringify({
+            contents: [{
+                role: "user",
+                parts: [
+                    { text: prompt },
+                    {
+                        inline_data: {
+                            mime_type: mimeType,
+                            data: base64Image
+                        }
+                    }
+                ]
+            }]
+        })
+    });
+
+    const data = await response.json();
+    console.log("AI Response:", data)
+    const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+
+    try {
+        return JSON.parse(responseText.trim());
+    } catch (e) {
+        console.error("Failed to parse response:", responseText);
+        return { error: "Failed to parse AI response" };
+    }
+}
+
+export async function POST(req: NextRequest) {
+    try {
+        const formData = await req.formData();
+        const file = formData.get('file') as File;
+
+        if (!file) {
+            return NextResponse.json(
+                { error: "No file uploaded" },
+                { status: 400 }
+            );
+        }
+
+        // Read the file as buffer
+        const buffer = Buffer.from(await file.arrayBuffer());
+
+        // Determine mime type
+        const mimeType = file.type || 'application/octet-stream';
+
+        // Process the image with Vertex AI
+        const analysisResult = await analyzeCardImage(buffer, mimeType);
+
+        if (analysisResult.error) {
+            return NextResponse.json(
+                { error: analysisResult.error },
+                { status: 500 }
+            );
+        }
+
+        return NextResponse.json(analysisResult, {
+            status: 200
+        });
+
+    } catch (error) {
+        console.error("Error processing file:", error);
+        return NextResponse.json(
+            { error: "Failed to process file" },
+            { status: 500 }
+        );
+    }
+}

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Maps Place Autocomplete</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBuc7OVsqxTF0pH5k1cUmROzpmHtYWPNc&libraries=places&callback=initAutocomplete" async defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 850px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(to right, #4285F4, #34A853);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: flex;
+            padding: 25px;
+            flex-wrap: wrap;
+        }
+
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+
+        .map-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .instructions h2 {
+            color: #4285F4;
+            margin-bottom: 15px;
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4285F4;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2);
+        }
+
+        #map {
+            height: 300px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+        }
+
+        .details-panel {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 150px;
+        }
+
+        .details-panel h3 {
+            color: #4285F4;
+            margin-bottom: 15px;
+        }
+
+        .details-content {
+            line-height: 1.6;
+        }
+
+        .api-key-note {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f1f3f4;
+            color: #5f6368;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+
+            .input-section, .map-section {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Google Maps Place Autocomplete</h1>
+        <p class="subtitle">Search for locations and see them on the map</p>
+    </header>
+
+    <div class="content">
+        <div class="input-section">
+            <div class="instructions">
+                <h2>How to Use</h2>
+                <ol>
+                    <li>Start typing an address or place name in the search box</li>
+                    <li>Select a location from the dropdown suggestions</li>
+                    <li>The selected location will be displayed on the map</li>
+                    <li>Place details will appear in the information panel</li>
+                </ol>
+            </div>
+
+            <div class="form-group">
+                <label for="autocomplete">Search for a location:</label>
+                <div class="input-container">
+                    <input id="autocomplete" placeholder="Enter an address or place name" type="text">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Full Address:</label>
+                <input id="address" type="text" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input id="city" type="text" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <input id="country" type="text" readonly>
+            </div>
+
+            <div class="api-key-note">
+                <strong>Note:</strong> To make this work, you'll need to replace "YOUR_API_KEY" in the script tag with your actual Google Maps API key.
+            </div>
+        </div>
+
+        <div class="map-section">
+            <h2>Location Map</h2>
+            <div id="map">Map will load after location selection</div>
+
+            <div class="details-panel">
+                <h3>Location Details</h3>
+                <div class="details-content" id="place-details">
+                    Select a location to see details here...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Implementation of Google Maps Place Autocomplete | Requires Google Maps API Key</p>
+    </footer>
+</div>
+
+<script>
+    // Initialize variables
+    let autocomplete;
+    let map;
+    let marker;
+    let place;
+
+    function initAutocomplete() {
+        // Create the autocomplete object
+        autocomplete = new google.maps.places.Autocomplete(
+            document.getElementById('autocomplete'),
+            {
+                types: ['geocode'],
+                componentRestrictions: {'country': ['us', 'ca', 'uk', 'au']},
+                fields: ['address_components', 'geometry', 'name', 'formatted_address']
+            }
+        );
+
+        // Set up event listener for when a place is selected
+        autocomplete.addListener('place_changed', onPlaceChanged);
+
+        // Initialize map
+        initMap();
+    }
+
+    function initMap() {
+        // Create a default map centered on the US
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 39.8283, lng: -98.5795},
+            zoom: 4,
+            mapTypeControl: true,
+            streetViewControl: true,
+            fullscreenControl: true
+        });
+
+        // Create a default marker
+        marker = new google.maps.Marker({
+            map: map,
+            animation: google.maps.Animation.DROP
+        });
+    }
+
+    function onPlaceChanged() {
+        place = autocomplete.getPlace();
+
+        if (!place.geometry) {
+            // User entered the name of a Place that was not suggested and pressed Enter
+            document.getElementById('autocomplete').placeholder = 'Enter a place';
+            return;
+        }
+
+        // Display place details
+        displayPlaceDetails(place);
+
+        // Center the map on the selected location
+        if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+        } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);
+        }
+
+        // Position the marker
+        marker.setPosition(place.geometry.location);
+        marker.setVisible(true);
+    }
+
+    function displayPlaceDetails(place) {
+        // Display formatted address
+        document.getElementById('address').value = place.formatted_address;
+
+        // Extract city and country from address components
+        let city = '';
+        let country = '';
+
+        for (const component of place.address_components) {
+            const componentType = component.types[0];
+
+            if (componentType === 'locality') {
+                city = component.long_name;
+            }
+
+            if (componentType === 'country') {
+                country = component.long_name;
+            }
+        }
+
+        document.getElementById('city').value = city;
+        document.getElementById('country').value = country;
+
+        // Display additional place details
+        const detailsContainer = document.getElementById('place-details');
+        detailsContainer.innerHTML = `
+                <p><strong>Place Name:</strong> ${place.name || 'N/A'}</p>
+                <p><strong>Formatted Address:</strong> ${place.formatted_address}</p>
+                <p><strong>Location Type:</strong> ${place.types ? place.types.join(', ') : 'N/A'}</p>
+                <p><strong>Coordinates:</strong> ${place.geometry.location.lat().toFixed(6)}, ${place.geometry.location.lng().toFixed(6)}</p>
+            `;
+    }
+
+    // Fallback in case Google Maps API doesn't load
+    setTimeout(() => {
+        if (typeof google === 'undefined') {
+            document.getElementById('map').innerHTML = '<p>Error: Google Maps API failed to load. Please check your API key.</p>';
+        }
+    }, 5000);
+</script>
+</body>
+</html>

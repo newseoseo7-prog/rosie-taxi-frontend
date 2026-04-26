@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "our-compound-461022-a2",
+  "private_key_id": "763699c56b4c48bedec4631ef27a9348c614c2ac",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDnJNEOIixIR0LO\ntyf3INthskbglL2vRAzgKfhCH3oNciD0OAt2lYHObXV3grJjjhg1yQ3q/LCbx+BG\nilkKIj9xh0NCTUrilbHsTx6Qnjge7ThpdHpjKesRWuWgg3z0B91yY/ZoKXRADCwi\n0Suz3zMBQmfbug/0rNBMeKlCNZqQWwhned/WE1UztC0EvowuTK8zpk9ctfBp8Ygs\nVECPFXu9x/KJ8Q4JgWudqg9+64tw1mwPHxtMgU9QarWoFd7oE5rGBIAqx4A8VLL8\n130JUhf2hpzHh1KOIdJF6NbFyWdYjLndefjEQmM8Fw5AozzPMNeH3TCLQ4iafVnu\n3oNPUTa3AgMBAAECggEATrj+zGn+G/XNPpsprOTPYvQ1aIqwGc+69OPGbjrLNmYe\n7B5kZRRhW91yyuvD9t0vyK27pENAoSXPcCbxUV69rdxMH3o0nXwvV1TRC58fbQUN\nF/l4L2rY6RXErEjsFy7QkIOUKgCoW6HprEgCMuY7OFwWBENX6NSsssbLmsWn6S66\nMS5QNxypv5rLQEEh2uNFRxLN0O506UimiPq02QnrXgDJ7uR7zC3cioMtrQDtOBxt\nLeWWw//HB6MJuLNGHsvK74+m/wcp5Rgc6GsUMGcQZWWbsVJpbbk2sMPNFSJcmX/C\nm7JAllEeJmZCR50i7H822i19nQW/lfZyh0J8uD9vEQKBgQD3/JUN649BWgoqz5F4\nkawuRkIdIqzwzznk4l9DipYJOFtWUstJMAVl5lQ9UiXx/Y4IbpKZHcYEny5t1kWV\nHzQsZ2Bxb62xZ5pm8HkgGJdK4p9pKfYE+Lewf/rHaKr+LPLeeu2fDQl4QG9d2OM6\npg5Az6wdDG4BjadfuPjO4y9N5wKBgQDunOfSBSkTf1Nq0A2Eg+FsbvnglHefFm+L\nRsb4SJ9N6YJVcTHK1DN3FHaXoLyPHy7Ag1tB8S5lqFcb2uioIVA5G6jFUF8ihmpY\nPttEmk5H9cR+m7DwLSJgGPNMKEq8pTMr2plI1/b7PZNkY2vdGJ+d+CVs/uywQb+9\nEjjPt3GWsQKBgQCitGc7fd08/I2FLzD70WAN8Gz6XsDnMp+CjAAC+Y+dNwu+ZI4a\nU9aG2AtXPGnHDxw8bgfjTESazbIRwK9guttpct41LxfgOOB2P7rJEzlYmb4LqstO\n0bz7ocxxPzxJjkY/MJpta4lWC7jF80KLPV5Gqbr8SCZ5AG7bgCpG24oy6wKBgQC5\nQIZWrvz6DzNzTP4BsOYV6n8DliDdGW0WY6fcYX2U3sL6lPxEbcVbIT8Fb5yVPW9t\ntU3nf1k3QaAHl0hkKCEBhXDdaA3EXzk3M+3GcEpwYeXhKf0QKupyU0ypBusnVNbK\nqFezj0BIRMEnAm1e5VwfJ+XenniiSxmSsA/9bH26sQKBgQDv3JjAqztpR1vFxzea\n5c9qIkJbN8p4TRQQimtRQVK5H4txyXRQLsqsiPDnqcG74eBcUTU+2wsqWXuIStjR\nuBJEEQ1wW2VFkUAwVACM1Gp/UOqadBj936/2SHe/Dzt3tDPkhpJuo/+v/2xV1xXt\nKcD7j78m7LLCS0r82bbyvzatdw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "rosievortexaccess@our-compound-461022-a2.iam.gserviceaccount.com",
+  "client_id": "111524450094170638275",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/rosievortexaccess%40our-compound-461022-a2.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

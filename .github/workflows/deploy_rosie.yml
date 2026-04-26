@@ -1,0 +1,80 @@
+name: Docker Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - v2
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create .env file
+        run: |
+          cat <<EOF > .env
+          PORT=${{ vars.PORT }}
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ vars.GOOGLE_MAPS_API_KEY }}
+          NEXT_PUBLIC_BACKEND_URL=${{ vars.BACKEND_URL }}
+          NEXT_PRIVATE_GOOGLE_MAP_KEY=${{ vars.PRIVATE_GOOGLE_MAP_KEY }}
+          DB_HOST=${{ vars.DB_HOST }}
+          DB_USER=${{ vars.DB_USER }}
+          DB_PASSWORD=${{ vars.DB_PASSWORD }}
+          DB_NAME=${{ vars.DB_NAME }}
+          NEXT_PUBLIC_AUTHNET_CLIENT_KEY=${{ vars.AUTHNET_CLIENT_KEY }}
+          AUTHNET_API_LOGIN_ID=${{ vars.API_LOGIN_ID}}
+          NEXT_PUBLIC_AUTHNET_API_LOGIN_ID=${{ vars.API_LOGIN_ID}}
+          MIN_FARE==${{ vars.MIN_FARE}}
+          PER_MILE=${{ vars.PER_MILE}}
+          REDIS_URL=${{ vars.REDIS_URL}}
+          AUTH_NET_TRANSACTION_KEY=${{ vars.AUTH_NET_TRANSACTION_KEY}}
+          EMAIL_HOST=${{ vars.EMAIL_HOST}}
+          EMAIL_PORT=${{ vars.EMAIL_PORT}}
+          EMAIL_USER=${{ vars.EMAIL_USER}}
+          EMAIL_PASSWORD=${{ vars.EMAIL_PASSWORD}}
+          EMAIL_FROM_NAME=${{ vars.EMAIL_FROM_NAME}}
+          EMAIL_FROM_ADDRESS=${{ vars.EMAIL_FROM_ADDRESS}}
+          ADMIN_EMAIL=${{ vars.ADMIN_EMAIL}}
+          ADMIN_PASSWORD=${{ vars.ADMIN_PASSWORD}}
+          EMAIL_SECURE=false
+          EOF
+
+      - name: Deploy Code and .env to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ vars.SERVER_HOST }}
+          username: ${{ vars.SERVER_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: .
+          target: ${{ vars.DEPLOY_PATH }}
+          overwrite: true
+          tar_tmp_path: ~/temp
+
+      - name: Build
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ vars.SERVER_HOST }}
+          username: ${{ vars.SERVER_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          timeout: '0s'
+          script: |
+            cd ${{ vars.DEPLOY_PATH }}
+            sudo docker stop rosie-nextjs || true
+            sudo docker rm rosie-nextjs || true
+            sudo docker build --network host --no-cache -t rosie-nextjs .
+
+      - name: Build and Run Container
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ vars.SERVER_HOST }}
+          username: ${{ vars.SERVER_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          timeout: '300s'
+          script: |
+            cd ${{ vars.DEPLOY_PATH }} 
+            sudo docker run -d --name rosie-nextjs --env-file .env  --add-host=host.docker.internal:172.17.0.1 --network=host rosie-nextjs
+            #            sudo cp vhost.conf /usr/local/lsws/conf/vhosts/new.rosietaxicab.com/vhost.conf
+            #            sudo systemctl restart lsws
+            sudo rm -rf -- .[^!.]* ..?* *

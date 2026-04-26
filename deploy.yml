@@ -1,0 +1,92 @@
+name: Deploy Node.js Application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Create .env File
+        run: |
+          cat <<EOL > .env
+          TZ=UTC
+          PORT=${{ vars.PORT }}
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ vars.GOOGLE_MAPS_API_KEY }}
+          NEXT_PUBLIC_BACKEND_URL=${{ vars.BACKEND_URL }}
+          EOL
+
+      - name: Prepare Build Archive
+        run: |
+          zip -r build.zip .
+          
+      - name: Deploy Application on Server
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ vars.SERVER_HOST }}
+          username: ${{ vars.SERVER_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          command_timeout: 15m
+          script: |
+            rm -rf ${{ vars.DEPLOY_PATH }}
+            mkdir ${{ vars.DEPLOY_PATH }}
+
+      - name: Upload Build Archive to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ vars.SERVER_HOST }}
+          username: ${{ vars.SERVER_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "build.zip"
+          overwrite: true
+          target: "${{ vars.DEPLOY_PATH }}"
+
+      - name: Unzip on Server
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ vars.SERVER_HOST }}
+          username: ${{ vars.SERVER_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          command_timeout: 15m
+          script: |
+            cd ${{ vars.DEPLOY_PATH }}
+            unzip -o build.zip
+            rm build.zip
+
+      - name: Install Node.js and Run Application on Server
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ vars.SERVER_HOST }}
+          username: ${{ vars.SERVER_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          command_timeout: 15m
+          stop_script: true
+          script: |
+            cd ${{ vars.DEPLOY_PATH }}
+            # Install Node.js if not already installed
+            if ! command -v node &> /dev/null; then
+              echo "Node.js not found, installing..."
+              curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            else
+              echo "Node.js is already installed"
+            fi
+
+            # Install dependencies and build the project
+            echo "Installing dependencies..."
+            npm install
+            echo "Building the project..."
+            npm run build
+
+            # Restart the service to reflect changes
+            sudo systemctl restart rosie_frontend.service

@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body,
+.text-base,
+p {
+  line-height: 1.7 !important;
+}
+p,
+a {
+  font-size: 16px !important;
+}
+.react-datepicker {
+  display: block !important;
+}
+h1,h2,h3,h4,h5,h6 {
+ line-height: 1.2 !important;
+}
+.swiper-button-next::after, .swiper-button-prev::after {
+     font-size: 24px !important;
+}
+.custom-autocomplete {
+    --gmpx-color-surface: #ffffff;
+    --gmpx-color-on-surface: #000000;
+    color:black !important;
+    /* other custom properties */
+}
+
+/* Admin panel mobile menu enhancements */
+@media (max-width: 640px) {
+  .admin-mobile-menu-btn {
+    min-width: 44px;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  
+  .admin-sidebar-nav a {
+    min-height: 48px;
+    touch-action: manipulation;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-navbar {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  
+  .admin-sidebar {
+    width: 100vw;
+    max-width: 320px;
+  }
+}

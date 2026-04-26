@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://new.rosietaxicab.com/
+
+# Sitemaps
+Sitemap: https://new.rosietaxicab.com/sitemap.xml
